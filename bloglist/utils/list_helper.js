@@ -20,6 +20,7 @@ const favoriteBlog = (blogs) => {
       favoriteBlog = blog
     }
   })
+  return favoriteBlog
 }
 
 module.exports = {

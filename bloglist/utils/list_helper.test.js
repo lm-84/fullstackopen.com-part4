@@ -85,3 +85,27 @@ describe('total likes', () => {
     expect(result).toBe(36)
   })
 })
+
+describe('favorite blog', () => {
+  test('when list has only one blog, equals the only blog', () => {
+    const result = listHelper.favoriteBlog(listWithOneBlog)
+    expect(result).toEqual(listWithOneBlog[0])
+  })
+
+  test('when list is empty, equals to {}', () => {
+    const result = listHelper.favoriteBlog([])
+    expect(result).toEqual({})
+  })
+
+  test('when list has more than one blog, equals the blog with max number of likes', () => {
+    const result = listHelper.favoriteBlog(blogs)
+    expect(result).toEqual({
+      _id: '5a422b3a1b54a676234d17f9',
+      title: 'Canonical string reduction',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+      likes: 12,
+      __v: 0,
+    })
+  })
+})
