@@ -30,9 +30,7 @@ const mostBlogs = (blogs) => {
     return {}
   } else {
     const authors = lodash.uniqBy(blogs, 'author')
-    console.log('authors =', authors)
     const count = lodash.countBy(blogs, 'author')
-    console.log('count =', count)
     const result = []
     authors.forEach((auth) => {
       const toAdd = {}
@@ -40,11 +38,33 @@ const mostBlogs = (blogs) => {
       toAdd.blogs = count[auth.author]
       result.push(toAdd)
     })
-    console.log('result =', result)
+
     const max = lodash.maxBy(result, function (o) {
       return o.blogs
     })
-    console.log('maaaax =', max)
+
+    return max
+  }
+}
+
+const mostLikes = (blogs) => {
+  console.log('blogs = ', blogs)
+  if (blogs.length === 0) {
+    return {}
+  } else {
+    const authors = lodash.uniqBy(blogs, 'author')
+    const result = []
+    authors.forEach((auth) => {
+      const toAdd = {}
+      toAdd.author = auth.author
+      toAdd.likes = lodash.sumBy(blogs, function (o) {
+        return o.author === auth.author ? o.likes : 0
+      })
+      result.push(toAdd)
+    })
+    const max = lodash.maxBy(result, function (o) {
+      return o.likes
+    })
     return max
   }
 }
@@ -54,4 +74,5 @@ module.exports = {
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 }
