@@ -90,6 +90,36 @@ describe('addition of a new blog', () => {
   })
 })
 
+describe('deletion of a blog', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const response = await api.get('/api/blogs')
+    const id = response.body[response.body.length - 1].id
+    await api.delete(`/api/blogs/${id}`).expect(204)
+  })
+  test('fails with status code 400 if id is invalid', async () => {
+    await api.delete('/api/blogs/1234').expect(400)
+  })
+  test('number of blogs decreased', async () => {
+    const response = await api.get('/api/blogs')
+    const previousLength = response.body.length
+    const id = response.body[response.body.length - 1].id
+    await api.delete(`/api/blogs/${id}`)
+    const newResponse = await api.get('/api/blogs')
+    expect(newResponse.body.length).toBe(previousLength - 1)
+  })
+  test('blog deleted from database', async () => {
+    const response = await api.get('/api/blogs')
+    const id = response.body[response.body.length - 1].id
+    await api.delete(`/api/blogs/${id}`)
+    const newResponse = await api.get('/api/blogs')
+    const blogs = newResponse.body
+    blogs.forEach((element) => {
+      delete element.id
+    })
+    expect(blogs).not.toContainEqual(response.body[response.body.length - 1])
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
