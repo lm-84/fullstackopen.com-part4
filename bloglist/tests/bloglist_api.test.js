@@ -14,6 +14,15 @@ const listWithOneBlog = [
   },
 ]
 
+const listWithOneBlogWithoutLikes = [
+  {
+    id: '5a422aa71b54a676234d17f8',
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+  },
+]
+
 test('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
@@ -48,6 +57,17 @@ describe('addition of a new blog', () => {
     })
     delete newBlog.id
     expect(blogs).toContainEqual(newBlog)
+  })
+  test('blog without likes added to database with likes set to 0', async () => {
+    const newBlog = listWithOneBlogWithoutLikes[0]
+    await api.post('/api/blogs').send(newBlog).expect(201)
+    const response = await api.get('/api/blogs')
+    const blogs = response.body
+    blogs.forEach((element) => {
+      delete element.id
+    })
+    delete newBlog.id
+    expect(blogs).toContainEqual({ ...newBlog, likes: 0 })
   })
 })
 
