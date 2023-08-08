@@ -111,7 +111,7 @@ describe('favorite blog', () => {
 })
 
 describe('most blogs', () => {
-  test('when list has only one blog, equals the only blogs author', () => {
+  test('when list has only one blog, equals theonly blog s author', () => {
     const result = listHelper.mostBlogs(listWithOneBlog)
     const exptectedResult = {}
     exptectedResult.author = listWithOneBlog[0].author
