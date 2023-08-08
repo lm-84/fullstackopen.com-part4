@@ -23,6 +23,14 @@ const listWithOneBlogWithoutLikes = [
   },
 ]
 
+const listWithOneBlogToFail = [
+  {
+    id: '5a422aa71b54a676234d17f8',
+    author: 'Edsger W. Dijkstra',
+    likes: 8,
+  },
+]
+
 test('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
@@ -68,6 +76,17 @@ describe('addition of a new blog', () => {
     })
     delete newBlog.id
     expect(blogs).toContainEqual({ ...newBlog, likes: 0 })
+  })
+  test('blog without title and url not added to database', async () => {
+    const newBlog = listWithOneBlogToFail[0]
+    await api.post('/api/blogs').send(newBlog).expect(400)
+    const response = await api.get('/api/blogs')
+    const blogs = response.body
+    blogs.forEach((element) => {
+      delete element.id
+    })
+    delete newBlog.id
+    expect(blogs).not.toContainEqual(newBlog)
   })
 })
 
