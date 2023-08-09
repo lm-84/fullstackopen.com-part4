@@ -120,6 +120,38 @@ describe('deletion of a blog', () => {
   })
 })
 
+describe('update of a blog', () => {
+  test('succeeds with status code 200 if id is valid', async () => {
+    const response = await api.get('/api/blogs')
+    const id = response.body[response.body.length - 1].id
+    await api.put(`/api/blogs/${id}`).expect(200)
+  })
+  test('fails with status code 400 if id is invalid', async () => {
+    await api.put('/api/blogs/1234').expect(400)
+  })
+  test('number of blogs unchanged', async () => {
+    const response = await api.get('/api/blogs')
+    const previousLength = response.body.length
+    const id = response.body[response.body.length - 1].id
+    await api.put(`/api/blogs/${id}`)
+    const newResponse = await api.get('/api/blogs')
+    expect(newResponse.body.length).toBe(previousLength)
+  })
+  test('blog updated in database', async () => {
+    const response = await api.get('/api/blogs')
+    const id = response.body[response.body.length - 1].id
+    const newBlog = { ...response.body[response.body.length - 1], likes: 10 }
+    await api.put(`/api/blogs/${id}`).send(newBlog)
+    const newResponse = await api.get('/api/blogs')
+    const blogs = newResponse.body
+    blogs.forEach((element) => {
+      delete element.id
+    })
+    delete newBlog.id
+    expect(blogs).toContainEqual(newBlog)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })

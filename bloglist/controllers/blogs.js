@@ -7,7 +7,7 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-  const body = new Blog(request.body)
+  const body = request.body
 
   if (!body.title || !body.url) {
     return response.status(400).end()
@@ -23,6 +23,20 @@ blogsRouter.post('/', async (request, response) => {
   const savedBlog = await blog.save()
   response.status(201)
   response.json(savedBlog)
+})
+
+blogsRouter.put('/:id', async (request, response) => {
+  const body = request.body
+
+  const blog = {
+    likes: body.likes || 0,
+  }
+
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true,
+  })
+  response.status(200)
+  response.json(updatedBlog)
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
