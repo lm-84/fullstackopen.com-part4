@@ -152,6 +152,41 @@ describe('update of a blog', () => {
   })
 })
 
+describe('creation of users', () => {
+  test('fails with status code 400 if username is not unique', async () => {
+    const newUser = {
+      username: 'ar9',
+      name: 'Jhon Doe',
+      password: '123',
+    }
+    await api.post('/api/users').send(newUser).expect(400)
+  })
+  test('fails with status code 400 if username is not defined', async () => {
+    const newUser = {
+      username: '',
+      name: 'Jhon Doe',
+      password: '123',
+    }
+    await api.post('/api/users').send(newUser).expect(400)
+  })
+  test('fails with status code 400 if username is less than 3 characters', async () => {
+    const newUser = {
+      username: 'ar',
+      name: 'Jhon Doe',
+      password: '123',
+    }
+    await api.post('/api/users').send(newUser).expect(400)
+  })
+  test('fails with status code 400 if password is less than 3 characters', async () => {
+    const newUser = {
+      username: 'ar9',
+      name: 'Jhon Doe',
+      password: '12',
+    }
+    await api.post('/api/users').send(newUser).expect(400)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
